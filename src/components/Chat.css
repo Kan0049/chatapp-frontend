@@ -1,0 +1,278 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Splash Screen */
+.splash-screen {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+  color: white;
+  animation: fadeOut 3s forwards;
+}
+
+.splash-screen h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; display: none; }
+}
+
+/* Main App Layout */
+.App {
+  display: flex;
+  height: 100vh;
+  background: #f0f2f5;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 300px;
+  background: linear-gradient(180deg, #2c3e50 0%, #3498db 100%);
+  color: white;
+  padding: 20px;
+  overflow-y: auto;
+  border-right: 2px solid #ddd;
+}
+
+.sidebar h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ffffff33;
+  padding-bottom: 10px;
+}
+
+.contact {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #ffffff22;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.contact:hover {
+  background: #ffffff44;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-name {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.contact-detail {
+  font-size: 0.9rem;
+  color: #e0e0e0;
+}
+
+/* Chat Container */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #ece5dd;
+}
+
+.chat-header {
+  background: linear-gradient(90deg, #2c3e50 0%, #3498db 100%);
+  color: white;
+  padding: 15px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  border-bottom: 2px solid #ddd;
+  text-align: center;
+}
+
+.messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.message {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 15px;
+  position: relative;
+}
+
+.message.sent {
+  background: #3498db;
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 0;
+}
+
+.message.received {
+  background: #ffffff;
+  color: #333;
+  align-self: flex-start;
+  border-bottom-left-radius: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.message-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.message-meta {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 5px;
+  font-size: 0.75rem;
+  color: #ffffffcc;
+}
+
+.message.received .message-meta {
+  color: #666;
+}
+
+.read-status {
+  margin-left: 5px;
+}
+
+.typing-indicator {
+  font-style: italic;
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  align-self: flex-start;
+}
+
+.message-input {
+  display: flex;
+  padding: 15px;
+  background: #fff;
+  border-top: 1px solid #ddd;
+}
+
+.message-input input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  outline: none;
+  font-size: 1rem;
+  margin-right: 10px;
+}
+
+.message-input button {
+  padding: 10px 20px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+.message-input button:hover {
+  background: #2980b9;
+}
+
+/* Login Container */
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+}
+
+.login-form {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-form h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.login-form input:focus {
+  border: 1px solid #3498db;
+}
+
+.login-form button {
+  width: 100%;
+  padding: 12px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.login-form button:hover {
+  background: #2980b9;
+}
+
+.login-form p {
+  margin-top: 15px;
+  color: #666;
+}
+
+.login-form p button {
+  background: none;
+  border: none;
+  color: #3498db;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.error {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}

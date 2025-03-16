@@ -18,7 +18,7 @@ const Login = ({ setUserId, userId }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', { mobile, password });
+      const response = await axios.post('https://chatappbackend-e3zq.onrender.com/api/auth/login', { mobile, password });
       if (response.data.message === 'Login successful') {
         setUserId(response.data.userId);
         localStorage.setItem('userId', response.data.userId);
@@ -32,7 +32,7 @@ const Login = ({ setUserId, userId }) => {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/signup', { name, mobile, password });
+      const response = await axios.post('https://chatappbackend-e3zq.onrender.com/api/auth/signup', { name, mobile, password });
       if (response.data.message === 'User created successfully') {
         setUserId(response.data.userId);
         localStorage.setItem('userId', response.data.userId);

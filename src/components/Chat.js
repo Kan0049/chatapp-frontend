@@ -3,7 +3,7 @@ import axios from 'axios';
 import io from 'socket.io-client';
 import Sidebar from './Sidebar';
 
-const socket = io('http://localhost:5000');
+const socket = io('https://chatappbackend-e3zq.onrender.com');
 
 const Chat = ({ userId, setUserId }) => {
   const [message, setMessage] = useState('');
@@ -16,11 +16,11 @@ const Chat = ({ userId, setUserId }) => {
     if (!selectedContact) return;
 
     try {
-      const response = await axios.get(`http://localhost:5000/api/messages/${userId}/${selectedContact}`);
+      const response = await axios.get(`https://chatappbackend-e3zq.onrender.com/api/messages/${userId}/${selectedContact}`);
       setMessages(response.data);
       const unreadMessages = response.data.filter(msg => !msg.isRead && msg.receiver === userId);
       for (const msg of unreadMessages) {
-        await axios.post('http://localhost:5000/api/messages/read', { messageId: msg._id });
+        await axios.post('https://chatappbackend-e3zq.onrender.com/api/messages/read', { messageId: msg._id });
         socket.emit('messageRead', { messageId: msg._id, sender: msg.sender, receiver: userId });
       }
     } catch (err) {
@@ -45,7 +45,7 @@ const Chat = ({ userId, setUserId }) => {
           }
           return prevMessages;
         });
-        axios.post('http://localhost:5000/api/messages/read', { messageId: messageData._id });
+        axios.post('https://chatappbackend-e3zq.onrender.com/api/messages/read', { messageId: messageData._id });
         socket.emit('messageRead', { messageId: messageData._id, sender: messageData.sender, receiver: userId });
       }
     });
@@ -91,7 +91,7 @@ const Chat = ({ userId, setUserId }) => {
       };
 
       try {
-        const response = await axios.post('http://localhost:5000/api/messages/send', messageData);
+        const response = await axios.post('https://chatappbackend-e3zq.onrender.com/api/messages/send', messageData);
         const savedMessage = response.data;
         setMessages((prev) => [...prev, savedMessage]);
         socket.emit('sendMessage', savedMessage);

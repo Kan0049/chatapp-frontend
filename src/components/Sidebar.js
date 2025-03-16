@@ -13,7 +13,7 @@ const Sidebar = ({ userId, setSelectedContact }) => {
       }
 
       try {
-        const response = await axios.get('http://localhost:5000/api/auth/users');
+        const response = await axios.get('https://chatappbackend-e3zq.onrender.com/api/auth/users');
         const filteredContacts = response.data.filter(user => user._id !== userId);
         setContacts(filteredContacts);
         setError(null);

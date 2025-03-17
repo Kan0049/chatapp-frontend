@@ -11,6 +11,7 @@ const Chat = ({ userId, setUserId }) => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState(null);
+  const [showSidebar, setShowSidebar] = useState(false); // New state for sidebar toggle
 
   const fetchMessages = async () => {
     if (!selectedContact) return;
@@ -104,7 +105,16 @@ const Chat = ({ userId, setUserId }) => {
 
   return (
     <div className="App">
-      <Sidebar userId={userId} setSelectedContact={setSelectedContact} />
+      {/* Toggle Button for Mobile */}
+      <button className="sidebar-toggle" onClick={() => setShowSidebar(!showSidebar)}>
+        ☰
+      </button>
+
+      {/* Sidebar */}
+      <div className={`sidebar ${showSidebar ? 'show' : ''}`}>
+        <Sidebar userId={userId} setSelectedContact={setSelectedContact} />
+      </div>
+
       <div className="chat-container">
         {selectedContact ? (
           <>

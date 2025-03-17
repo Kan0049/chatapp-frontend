@@ -15,14 +15,14 @@ const Login = ({ setUserId }) => {
         ? 'https://chatappbackend-e3zq.onrender.com/api/auth/signup'
         : 'https://chatappbackend-e3zq.onrender.com/api/auth/login';
       const response = await axios.post(url, { name: isSignup ? 'Test User' : '', mobile, password });
-      alert(response.data.message); // Popup message
+      alert(response.data.message); // Popup for success
       if (response.data.userId) {
         setUserId(response.data.userId);
         localStorage.setItem('userId', response.data.userId);
         navigate('/chat');
       }
     } catch (err) {
-      alert(err.response?.data.message || 'Something went wrong'); // Popup error
+      alert(err.response?.data.message || 'Something went wrong'); // Popup for error
     }
   };
 

@@ -1,43 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import Login from './components/Login';
 import Chat from './components/Chat';
 import './App.css';
 
-function App() {
+const App = () => {
   const [userId, setUserId] = useState(null);
-  const [showSplash, setShowSplash] = useState(true);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Check for stored userId in local storage
     const storedUserId = localStorage.getItem('userId');
     if (storedUserId) {
       setUserId(storedUserId);
+      // Fetch user details
+      fetch('https://chatappbackend-e3zq.onrender.com/api/auth/user/' + storedUserId)
+        .then(res => res.json())
+        .then(data => setUser(data))
+        .catch(err => console.error('Fetch user error:', err));
     }
-
-    // Show splash screen for 3 seconds
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 3000);
-    return () => clearTimeout(timer);
   }, []);
-
-  if (showSplash) {
-    return (
-      <div className="splash-screen">
-        <h1>ChatApp</h1>
-      </div>
-    );
-  }
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login setUserId={setUserId} userId={userId} />} />
-        <Route path="/chat" element={<Chat userId={userId} setUserId={setUserId} />} />
+        <Route path="/" element={<LoginWrapper setUserId={setUserId} userId={userId} />} />
+        <Route path="/chat" element={<ChatWrapper userId={userId} setUserId={setUserId} user={user} />} />
       </Routes>
     </Router>
   );
-}
+};
+
+const LoginWrapper = ({ setUserId, userId }) => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (userId) navigate('/chat');
+  }, [userId, navigate]);
+  return <Login setUserId={setUserId} userId={userId} />;
+};
+
+const ChatWrapper = ({ userId, setUserId, user }) => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!userId) navigate('/');
+  }, [userId, navigate]);
+  return <Chat userId={userId} setUserId={setUserId} user={user} />;
+};
 
 export default App;

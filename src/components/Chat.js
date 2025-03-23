@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
 import Sidebar from './Sidebar';
 
 const socket = io('https://chatappbackend-e3zq.onrender.com');
 
-const Chat = ({ userId, setUserId }) => {
+const Chat = ({ userId, setUserId, user }) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [selectedContact, setSelectedContact] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState(null);
-  const [showSidebar, setShowSidebar] = useState(false); // New state for sidebar toggle
+  const [showSidebar, setShowSidebar] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const fetchMessages = async () => {
     if (!selectedContact) return;
@@ -24,8 +29,10 @@ const Chat = ({ userId, setUserId }) => {
         await axios.post('https://chatappbackend-e3zq.onrender.com/api/messages/read', { messageId: msg._id });
         socket.emit('messageRead', { messageId: msg._id, sender: msg.sender, receiver: userId });
       }
+      scrollToBottom();
     } catch (err) {
       setMessages([]);
+      console.error('Fetch messages error:', err);
     }
   };
 
@@ -35,10 +42,7 @@ const Chat = ({ userId, setUserId }) => {
     }
 
     socket.on('receiveMessage', (messageData) => {
-      if (
-        messageData.sender === selectedContact &&
-        messageData.receiver === userId
-      ) {
+      if (messageData.sender === selectedContact && messageData.receiver === userId) {
         setMessages((prevMessages) => {
           const isDuplicate = prevMessages.some(msg => msg._id === messageData._id);
           if (!isDuplicate) {
@@ -48,6 +52,7 @@ const Chat = ({ userId, setUserId }) => {
         });
         axios.post('https://chatappbackend-e3zq.onrender.com/api/messages/read', { messageId: messageData._id });
         socket.emit('messageRead', { messageId: messageData._id, sender: messageData.sender, receiver: userId });
+        scrollToBottom();
       }
     });
 
@@ -88,7 +93,8 @@ const Chat = ({ userId, setUserId }) => {
         sender: userId,
         receiver: selectedContact,
         message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        isRead: false,
       };
 
       try {
@@ -97,22 +103,35 @@ const Chat = ({ userId, setUserId }) => {
         setMessages((prev) => [...prev, savedMessage]);
         socket.emit('sendMessage', savedMessage);
         setMessage('');
+        scrollToBottom();
       } catch (err) {
         console.error('Error sending message:', err);
       }
     }
   };
 
+  const handleLogout = () => {
+    setUserId(null);
+    localStorage.removeItem('userId');
+  };
+
   return (
     <div className="App">
-      {/* Toggle Button for Mobile */}
       <button className="sidebar-toggle" onClick={() => setShowSidebar(!showSidebar)}>
         ☰
       </button>
 
-      {/* Sidebar */}
-      <div className={`sidebar ${showSidebar ? 'show' : ''}`}>
-        <Sidebar userId={userId} setSelectedContact={setSelectedContact} />
+      <div className={`sidebar ${showSidebar ? 'show' : 'hide'}`}>
+        <div className="user-profile">
+          <img
+            src={user?.profilePicture || 'https://via.placeholder.com/40'}
+            alt="Profile"
+            className="profile-pic"
+          />
+          <span>{user?.name || 'User'}</span>
+          <button className="logout-btn" onClick={handleLogout}>Logout</button>
+        </div>
+        <Sidebar userId={userId} setSelectedContact={setSelectedContact} setShowSidebar={setShowSidebar} />
       </div>
 
       <div className="chat-container">
@@ -143,6 +162,7 @@ const Chat = ({ userId, setUserId }) => {
                 </div>
               ))}
               {isTyping && <p className="typing-indicator">User is typing...</p>}
+              <div ref={messagesEndRef} />
             </div>
             <div className="message-input">
               <input

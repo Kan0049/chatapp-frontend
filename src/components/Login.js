@@ -7,6 +7,7 @@ const Login = ({ setUserId, userId }) => {
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [isSignup, setIsSignup] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,31 +16,23 @@ const Login = ({ setUserId, userId }) => {
     }
   }, [userId, navigate]);
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
     try {
-      const response = await axios.post('https://chatappbackend-e3zq.onrender.com/api/auth/login', { mobile, password });
-      if (response.data.message === 'Login successful') {
+      const url = isSignup
+        ? 'https://chatappbackend-e3zq.onrender.com/api/auth/signup'
+        : 'https://chatappbackend-e3zq.onrender.com/api/auth/login';
+      const response = await axios.post(url, { name: isSignup ? name : '', mobile, password });
+      alert(response.data.message);
+      if (response.data.userId) {
         setUserId(response.data.userId);
         localStorage.setItem('userId', response.data.userId);
         navigate('/chat');
       }
     } catch (err) {
-      alert('Login failed: ' + err.response.data.message);
-    }
-  };
-
-  const handleSignup = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post('https://chatappbackend-e3zq.onrender.com/api/auth/signup', { name, mobile, password });
-      if (response.data.message === 'User created successfully') {
-        setUserId(response.data.userId);
-        localStorage.setItem('userId', response.data.userId);
-        navigate('/chat');
-      }
-    } catch (err) {
-      alert('Signup failed: ' + err.response.data.message);
+      setError(err.response?.data.message || 'Something went wrong');
+      alert(err.response?.data.message || 'Something went wrong');
     }
   };
 
@@ -47,7 +40,8 @@ const Login = ({ setUserId, userId }) => {
     <div className="login-container">
       <div className="login-form">
         <h2>{isSignup ? 'Sign Up for ChatApp' : 'Login to ChatApp'}</h2>
-        <form onSubmit={isSignup ? handleSignup : handleLogin}>
+        {error && <p className="error">{error}</p>}
+        <form onSubmit={handleSubmit}>
           {isSignup && (
             <input
               type="text"
